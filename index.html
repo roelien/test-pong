@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+    <script type="text/javascript" src="server.js"></script>
+</head>
+<style>
+    html, body {
+       width: 100%;
+       height: 100%;
+       margin: 0px;
+    }
+    #mijnCanvasje{
+       background-color: #000;
+    } 
+</style>
+
+<body>
+    <canvas id="mijnCanvasje"></canvas>
+    <div id="balkLinks"></div>
+    
+
+        
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    if ( !window.requestAnimationFrame ) { // Deze methode vertelt de browser dat je een animatie wilt uitvoeren
+        window.requestAnimationFrame = ( function() {
+            return window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame || //voor Firefox
+            window.oRequestAnimationFrame || //voor Opera
+            window.msRequestAnimationFrame || //voor internet explorer
+               
+            function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
+            window.setTimeout( callback, 1000 / 60 );
+            }; 
+        } )(); 
+    }
+    
+    function startDrawing(canvasId) {
+        var canvasElement = document.getElementById(canvasId);
+        var drawingContext = canvasElement.getContext("2d");
+        return drawingContext;
+    }
+    
+    var canvasWidth = window.innerWidth;
+    var canvasHeight = window.innerHeight;
+    var theContext = startDrawing("mijnCanvasje");
+    window.addEventListener('resize', resizeCanvas, false);
+    
+    function resizeCanvas() {
+        mijnCanvasje.width = canvasWidth
+        mijnCanvasje.height = canvasHeight
+    }
+    
+    resizeCanvas();
+    
+    
+    function drawBall(thisBall) {
+        theContext.beginPath();
+        theContext.arc(thisBall.x, thisBall.y, thisBall.r, 0, 2*Math.PI, false);
+        theContext.closePath();
+        theContext.fill();
+        theContext.fillStyle='#fff';
+    }
+    
+    function drawPlatform1(x, y) {   // Tekent het platform links
+        theContext.beginPath();
+        theContext.rect(platform1X, platform1Y, 10, hoogtePlatform)
+        theContext.closePath();
+        theContext.fillStyle='#fff';
+        theContext.stroke();
+    }
+    
+    
+    
+    
+    
+    var socket = io();
+        
+    socket.on('canvas', function(ballArr){
+       
+        theContext.clearRect(0,0,canvasWidth,canvasHeight); 
+        
+        for(var i=0;i<ballArr.length;i++){
+            var thisBall=ballArr[i];
+            drawBall(thisBall);
+            console.log('>>>>', i, thisBall);
+        }
+
+    });
+      
+</script>
+</body>
+</html>
