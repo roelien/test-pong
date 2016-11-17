@@ -27,7 +27,14 @@ var ballArr=[
 function moveBall(ball){
     ball.x += ball.stepX;
     ball.y += ball.stepY;
-    
+
+    if(ball.x == 470 || ball.x == 30){
+        ball.stepX = -ball.stepX;
+    }
+    if (ball.y == 30 || ball.y == 270){
+        ball.stepY = -ball.stepY;
+    }
+
     return ball;
 }
 
